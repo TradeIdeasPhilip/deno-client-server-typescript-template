@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "deno"
+		},
+		{
+			"path": "everything-else"
+		}
+	],
+	"settings": {
+		"deno.enable": true
+	}
+}
