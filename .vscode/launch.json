@@ -8,12 +8,12 @@
             "name": "Launch Deno",
             "request": "launch",
             "type": "pwa-node",
-            "program": "./Main.ts",
+            "program": "./deno/Main.ts",
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "deno",
             "runtimeArgs": [
                 "run",
-                "--inspect-brk",
+                "--inspect",
                 "--allow-all"
             ],
             "args": ["-f", "config_common.txt"],
