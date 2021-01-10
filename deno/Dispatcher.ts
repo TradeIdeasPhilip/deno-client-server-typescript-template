@@ -84,8 +84,13 @@ export class WebServer {
       urlPrefix,
       async (request: AugmentedRequest, remainder: string) => {
         async function tryOnce(localFileName : string) : Promise<boolean> {
+          const path = new URL(localFileName, import.meta.url);
           try {
-            const file = await Deno.open(localFileName);
+            //Don't attempt to open directory
+            if(Deno.statSync(path).isDirectory){
+              return false;
+            }
+            const file = await Deno.open(path);
             const headers = new Headers();
             if (/\.js$/.test(localFileName)) {
               headers.append("content-type", "text/javascript");

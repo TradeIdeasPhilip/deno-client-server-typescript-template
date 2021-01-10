@@ -1,6 +1,6 @@
-import { copyrightString } from "../ts-shared/useful-stuff";
-import { tripleRot13 } from "../ts-shared/high-security";
-import { getById } from "./client-misc";
+import { copyrightString } from "../ts-shared/useful-stuff.ts";
+import { tripleRot13 } from "../ts-shared/high-security.ts";
+import { getById } from "./client-misc.ts";
 
 
 const nameInput = getById("name", HTMLInputElement);
@@ -8,7 +8,7 @@ const goButton = getById("go", HTMLButtonElement);
 const answerP = getById("answer", HTMLParagraphElement);
 const copyrightP = getById("copyright", HTMLParagraphElement);
 
-goButton.addEventListener("click", async ev => {
+goButton.addEventListener("click", async () => {
   const name = nameInput.value.trim();
   const encryptedName = tripleRot13(name);
   const response = await fetch("/js-bin/greet?encrypted_name=" + encodeURIComponent(encryptedName));

@@ -1,4 +1,4 @@
-import { rot13 } from "./useful-stuff";
+import { rot13 } from "./useful-stuff.ts";
 
 /**
  * 100% kid-sister-proof
