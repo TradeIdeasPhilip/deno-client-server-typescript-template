@@ -9,55 +9,79 @@ Edit client, server, and shared library files all in a single IDE, all in TypeSc
  - Create TypeScript modules shared between the client and the server.
  - Use a single IDE to edit all three types of modules.
  - Intellisense in the editor should use the correct tsconfig file for each directory.
-## Current Issues
-### Intellisense is flakey at best 😢
-Details vary.
+## `.js` is the new `.ts`
+I found a solution to the file extension problem.
+### New Rules
+ - All Deno TypeScript files always use the `.ts` file extension in their import statements.
+ - All web facing or shared TypeScript files always use the `.js` file extension in their import statements.
+ - Never leave the extension blank.
+### Background
+Microsoft has decided that you should never use the `.ts` extension in an import in a TypeScript file.
+You can use the `.js` extension instead.
+Microsoft is [adamant](https://github.com/microsoft/TypeScript/issues/16577#issuecomment-754941937) about these rules.
+
+When verifying the file TypeScript will completely ignore the `.js` extension.
+TypeScript will continue to use its normal rules to "find" the file you want to import.
+In particular, if there's a file with the exact same name but with the `.ts` extension, it will look at the `.ts` file.
+
+When creating the `.js` files, TypeScript will copy the file name exactly as is.
+That is what we want!
+That is what is requied when the web browser is using the built in ES modules, rather than a 3rd party module loader.
+And that *almost* works for Deno.
+### What it means to us
+When you are editing TypeScript files, VS Code uses the verifying rules described above.
+If you import from a `.js` file, it will know that you really meant the corresponding `.ts` file.
+Intellesense will check your files using all the TypeScript rules.
+If you right click on the import file, and ask VS Code to take you there, it will take you to the `.ts` file, not the `.js` file.
+The `.js` file doesn't have to even exist yet.
+
+Before you run the Deno server, first run CopyLibraries.ts.
+This copies the shared libraries from the everything-else project.
+In the process it modifies the imports.
+If you were importing from a `.js` file, the copy will import from the corresponding `.ts` file.
+Deno doesn't know or care that we compiled some of these to JavaScript in a different directory.
+## Current Status
+### Modules
+I **can** share modules between client and server.
+And those modules **can** import other modules.
+😃
+
+You have to remember not to edit the wrong version of the shared library code.
+I tried to mark the derrived objects as read-only, but that didn't work.
+I've marked the top of these with comments, but you could miss that.
+### Editors
+It all falls to pieces if I try to load the workspace.
+Intellisense is flakey at best 😢
 Sometimes VS code tells me that the TypeScript service has died 5 times in a row.
 Sometimes VS code does no syntax highlighting or suggesting at all.
 Usually it makes some attempts, many of which fail, details vary from one run to the next.
 The "problems" window and the red marks numbers in the "explorer" panel are similarly unpredictable.
 
-I can set up a simple Deno server or TypeScript client project in VS code without issue.
-I run into trouble when I try do both at once.
-### What's the best way to compile?
-Currently you have to hit control-shit-B to build the project.
-
-TypeScript has a watch option.
-And VS Code includes a template for that.
-I've never gotten it to work.
-
-Or the server could check for an out of date JavaScript file.
-And it could do the build.
-### Is there an easier way?
-It seems like this shouldn't be so hard.
-Am I doing something wrong?
-Is there a better way to do this?
-
-Has someone already created this template?
-
-I think this is a pretty common project structure.
-Client / Server / Shared.
-This is the default template for GWT projects.
-### Whatever this is
-![Source Map Problem](SourceMapProblem.png)
-## Current Status
-### Modules
-I **can** share modules between client and server.
-But those modules **cannot** import other modules.
-Either the import statement includes ".ts" or it does not.
-Either the client side or the server side will reject the import statement.
-
-I use an unorthodox method of handling the file extension on the client side.
-It works.
-### Editors
-It all falls to pieces if I try to load the workspace.
-
 If I only load the deno directory or the everything-else directory into VS Code, it works.
-It's a real pain jumping back and forth, but it works.
+
+It's a real pain jumping back and forth.
+For a slight improvement, use VS Code's "New Window" feature.
+Keep the deno project in one window and the everything-else project in a different window.
 ### Debugger
 The debugger works pretty well!
 You can debug the server code right in VS Code.
 You can debug the client code in Chrome.
-Source maps work, despite the confusing error message to the contrary.
+Source maps work in Chrome.
+😁
+### Build Process
+This works but it needs more automation.
+Currently you need to use shift-control-B in one VS Code window to build the client files.
+And you need to run a Deno script from the terminal tab of the other VS Code window to copy some files.
+Finally you hit the run button in the second VS Code window.
+
+It should be easy to add all of this to the run button.
+https://stackoverflow.com/questions/35327016/using-prelaunchtasks-and-naming-a-task-in-visual-studio-code
+I stopped here because I made a lot of progress on the proof of concept and I wanted to commit before I broke something else.
+
+Ideally both of these pre-tasks should be running constantly.
+We should watch for file changes.
+If any web facing or shared `.ts` files change, run the tsc build.
+If any shared `.ts` files change, run `CopyLibraries.ts`.
 ## Bonus Points
-Make 2 spaces the default for new files.
+ - Make 2 spaces the default for new files.
+ - Add a sample ts file that uses tsx.

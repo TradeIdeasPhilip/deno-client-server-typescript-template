@@ -102,10 +102,6 @@ export class WebServer {
           // Success!
           return;
         }
-        if ((!/\.js$/.test(localFile)) && (await tryOnce(localFile + ".js"))) {
-          // Success, after adding .js.
-          return;
-        }
         if ((!/\/index.html$/.test(localFile)) && (await tryOnce(localFile + "/index.html"))) {
           // Success, after adding /index.html.
           return;

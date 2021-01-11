@@ -1,6 +1,6 @@
-import { copyrightString } from "../ts-shared/useful-stuff";
-import { tripleRot13 } from "../ts-shared/high-security";
-import { getById } from "./client-misc";
+import { copyrightString } from "../ts-shared/useful-stuff.js";
+import { tripleRot13 } from "../ts-shared/high-security.js";
+import { getById } from "./client-misc.js";
 
 
 const nameInput = getById("name", HTMLInputElement);

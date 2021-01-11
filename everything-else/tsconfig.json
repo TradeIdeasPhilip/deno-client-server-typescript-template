@@ -19,7 +19,5 @@
       "suppressExcessPropertyErrors": false,
       "suppressImplicitAnyIndexErrors": false,
       "removeComments": true,
-      "outDir": "visible-to-web/derived-objects"
     },
-    "include": ["visible-to-web/ts/*", "visible-to-web/ts-shared/*"]
   }
