@@ -26,12 +26,12 @@ In particular, if there's a file with the exact same name but with the `.ts` ext
 
 When creating the `.js` files, TypeScript will copy the file name exactly as is.
 That is what we want!
-That is what is requied when the web browser is using the built in ES modules, rather than a 3rd party module loader.
+That is what is required when the web browser is using the built in ES modules, rather than a 3rd party module loader.
 And that *almost* works for Deno.
 ### What it means to us
 When you are editing TypeScript files, VS Code uses the verifying rules described above.
 If you import from a `.js` file, it will know that you really meant the corresponding `.ts` file.
-Intellesense will check your files using all the TypeScript rules.
+Intellisense will check your files using all the TypeScript rules.
 If you right click on the import file, and ask VS Code to take you there, it will take you to the `.ts` file, not the `.js` file.
 The `.js` file doesn't have to even exist yet.
 
@@ -47,7 +47,7 @@ And those modules **can** import other modules.
 😃
 
 You have to remember not to edit the wrong version of the shared library code.
-I tried to mark the derrived objects as read-only, but that didn't work.
+I tried to mark the derived objects as read-only, but that didn't work.
 I've marked the top of these with comments, but you could miss that.
 ### Editors
 It all falls to pieces if I try to load the workspace.

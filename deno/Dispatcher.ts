@@ -42,7 +42,7 @@ export class WebServer {
       //req.respond({ body: JSON.stringify( {...req, w: "removed", r:"removed", headers : Array.from(req.headers)}) + "\n" });
       const regexpResult = WebServer.BREAK_QUERY_STRING.exec(req.url)!;
       const r = req as AugmentedRequest;
-      r.path = WebServer.sanatize(regexpResult[1]);
+      r.path = WebServer.sanitize(regexpResult[1]);
       console.log(r.path, new Date());
       r.searchParams = new URLSearchParams(regexpResult[2]);
       let handled = false;
@@ -144,7 +144,7 @@ export class WebServer {
    * @param path The input path.  The query string, protocol, hash, etc., should already be removed.
    */
 
-  static sanatize(path: string): string {
+  static sanitize(path: string): string {
     // TODO should this include some of the logic from getSafePath()?
     // Split on / or \.
     const original: string[] = path.split(/\/|\\/);
@@ -155,7 +155,7 @@ export class WebServer {
         // If we are already at the top, ignore this.
         final.pop();
       } else if ((segment == ".") || (segment == "")) {
-        // Explicilty ignore.
+        // Explicitly ignore.
         // /// => /
         // /././ => /
       } else {
@@ -163,9 +163,9 @@ export class WebServer {
       }
     });
     return "/" + final.join("/");
-    // path . replaceall() any number of adjacent // gets replace with a single /
+    // path . replaceAll() any number of adjacent // gets replace with a single /
     path = path.replaceAll(/\/+/g, "/");
-    // replaceall /./ becomes /
+    // replaceAll /./ becomes /
     // if it ends in /. remove the final .
     path = path.replaceAll(/\/\.(?=\/|$)/g, "");
     // work from the end.  /[^/]*/../ (but need to quote the slashes) gets replaced by /
@@ -182,7 +182,7 @@ export class WebServer {
    * 
    * We assume that prefix is a directory name.  We only report a match if 
    * the prefix is exactly the same as the path, or if the prefix is immediately
-   * folloed by a /.
+   * followed by a /.
    * 
    * If the path is a match, we return the part of the match after the /, or just
    * "" if there was nothing after the prefix.  Warning, "" and undefined are both
@@ -200,7 +200,7 @@ export class WebServer {
    */
 
   static dirPrefix(prefix: string, path: string): string | undefined {
-    // TODO should make // equivilant to /.  It's easier if you can just add a / an time you are not sure.
+    // TODO should make // equivalent to /.  It's easier if you can just add a / an time you are not sure.
     if (prefix.length > path.length) {
       //console.log("exit 1", prefix, path);
       return;
@@ -241,7 +241,7 @@ export class WebServer {
 // AugmentedRequest should be a class.
 // getRawPath() and getSafePath() should be methods.
 // add something similar for the host field.
-// Add a way to responsed the way we like to with an obect turned to json followed by /n.
+// Add a way to respond the way we like to with an object turned to json followed by /n.
 
 export function getRawPath(request: AugmentedRequest): string | null {
   return request.searchParams.get("path");
