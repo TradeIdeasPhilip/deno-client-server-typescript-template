@@ -11,6 +11,8 @@ Edit client, server, and shared library files all in a single IDE, all in TypeSc
  - Intellisense in the editor should use the correct tsconfig file for each directory.
 ## `.js` is the new `.ts`
 A surprisingly tricky issue is what file extension to use when importing from a TypeScript file.
+
+`import { MyClass } from "./my-library.❔❔❔";`
 ### New Rules
  - All Deno TypeScript files always use the `.ts` file extension in their import statements.
  - All web facing or shared TypeScript files always use the `.js` file extension in their import statements.
@@ -71,7 +73,7 @@ Source maps work in Chrome.
 ### Client Build Process
 Client side files are built automatically.
 When you try to access a `.js` or `.js.map` file our web server will check the dates of the files.
-If the `.ts` file is newer, the web server will automatically call tsc.
+If the corresponding `.ts` file is newer, the web server will automatically call tsc.
 
 `.ts` files now work like normal `.js`, `.html`, and `.php` files.
 You just save your change in your editor then hit refresh in your browser.
@@ -87,6 +89,11 @@ I stopped here because I made a lot of progress on the proof of concept and I wa
 Ideally the server part should be running constantly.
 It should watch for file changes.
 If any shared `.ts` files change, `CopyLibraries.ts` should automatically notice and do another copy.
+## Prerequisites
+To make this project work you need to install:
+ - [VS Code](https://code.visualstudio.com/download)
+ - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (including git-bash) and
+ - [tsc](https://www.typescriptlang.org/download) (I used the npm install.)
 ## Bonus Points
  - Make 2 spaces the default for new files.
  - Add a sample ts file that uses tsx.
