@@ -16,13 +16,11 @@ export type AugmentedRequest = ServerRequest & {
  * Return true if we have handled this request, false if someone else should handle this.
  */
 
-type Action = {
-  (request: AugmentedRequest): boolean;
-};
+type Action = (request: AugmentedRequest) => Promise<boolean>;
 
-type PrefixAction = {
-  (request: AugmentedRequest, remainder: string): void;
-};
+type PrefixAction = (request: AugmentedRequest, remainder: string) => Promise<boolean>;
+
+type FilePreviewAction = (fileName : string, request: AugmentedRequest) => Promise<boolean>;
 
 export class WebServer {
   private static readonly BREAK_QUERY_STRING = /^([^?]*)(\??.*)$/;
@@ -32,29 +30,33 @@ export class WebServer {
     req.respond({ body: "404\n" }); // TODO set return code
   }
 
+  /**
+   * Expected use:  run() will call handleRequest() as soon as we get a request.
+   * handleRequest() might or might not get put to sleep.
+   * handleRequest() returns a promise but there's no good reason to wait on it.
+   * @param request Respond to this request one way or another.
+   */
+  private async handleRequest(request : AugmentedRequest) {
+    const regexpResult = WebServer.BREAK_QUERY_STRING.exec(request.url)!;
+    request.path = WebServer.sanitize(regexpResult[1]);
+    console.log(request.path, new Date());
+    request.searchParams = new URLSearchParams(regexpResult[2]);
+    let handled = false;
+    for (const action of this.actions) {
+      handled = await action(request);
+      if (handled) {
+        break;
+      }
+    }
+    if (!handled) {
+      this.notFound(request);
+    }
+  }
+
   private async run() {
     const s = serve({ port: 9000 });
     for await (const req of s) {
-      const headers: Headers = req.headers;
-      //const url : URL = new URL(req.url, "http://" + (headers.get("host")??"www.example.com") + "/");
-      //const response : string = JSON.stringify({ ...url});
-      //req.respond({ body: response + "\n" });
-      //req.respond({ body: JSON.stringify( {...req, w: "removed", r:"removed", headers : Array.from(req.headers)}) + "\n" });
-      const regexpResult = WebServer.BREAK_QUERY_STRING.exec(req.url)!;
-      const r = req as AugmentedRequest;
-      r.path = WebServer.sanitize(regexpResult[1]);
-      console.log(r.path, new Date());
-      r.searchParams = new URLSearchParams(regexpResult[2]);
-      let handled = false;
-      for (const action of this.actions) {
-        handled = action(r);
-        if (handled) {
-          break;
-        }
-      }
-      if (!handled) {
-        this.notFound(r);
-      }
+      this.handleRequest(req as AugmentedRequest);
     }
   }
 
@@ -63,26 +65,30 @@ export class WebServer {
   }
 
   public addPrefixAction(urlPrefix: string, action: PrefixAction) {
-    // TODO it would be nice if we could add an error handler here that would respond to the
-    // client with an appropriate error message.
-    // That means we need to know if action is async or not.
-    this.addAction((request: AugmentedRequest): boolean => {
+    this.addAction((request: AugmentedRequest): Promise<boolean> => {
       // Note:  the "?" part of the query has already been removed from request.path and moved
       // to request.searchParams.  The prefix "/abc" will match the query "http://127.0.0.1:8000/abc?de=fg".
       const remainder = WebServer.dirPrefix(urlPrefix, request.path);
       if (remainder === undefined) {
-        return false;
+        return Promise.resolve(false);
       } else {
         action(request, remainder);
-        return true;
+        return Promise.resolve(true);
       }
     });
   }
 
-  public addFileHandler(urlPrefix: string, filePrefix: string): void {
+  /**
+   * Add a rule to copy some files as is.
+   * @param urlPrefix What to look for in the url.  e.g. "/static" if you want to capture http://127.0.0.1:9000/static/
+   * and http://127.0.0.1:9000/static/ts/index.js
+   * @param filePrefix Where to look for files.  e.g. "../everything-else/visible-to-web/" if you want to expose
+   * ../everything-else/visible-to-web/index.html and ../everything-else/visible-to-web/ts/index.js.
+   */
+  public addFileHandler(urlPrefix: string, filePrefix: string, preview? : FilePreviewAction): void {
     this.addPrefixAction(
       urlPrefix,
-      async (request: AugmentedRequest, remainder: string) => {
+      async (request: AugmentedRequest, remainder: string) : Promise<boolean> => {
         async function tryOnce(localFileName : string) : Promise<boolean> {
           try {
             const file = await Deno.open(localFileName);
@@ -98,30 +104,20 @@ export class WebServer {
           }
         }
         const localFile = filePrefix + remainder;
+        if (preview && await preview(localFile, request)) {
+          // The preview action took care of the request.
+          return true;
+        }
         if (await tryOnce(localFile)) {
           // Success!
-          return;
+          return true;
         }
         if ((!/\/index.html$/.test(localFile)) && (await tryOnce(localFile + "/index.html"))) {
           // Success, after adding /index.html.
-          return;
+          return true;
         }
         console.log("404", localFile);
-
-        // TODO when I tried to open a directory the server crashes.  Other errors (like file not found)
-        // are caught by the catch() above.
-        // [phil@joey-mousepad admin]$ curl 'http://localhost:8000/static'
-        // curl: (52) Empty reply from server
-        // [phil@joey-mousepad admin]$ error: Uncaught Error: Is a directory (os error 21)
-        // at unwrapResponse (deno:cli/rt/10_dispatch_minimal.js:59:13)
-        // at sendAsync (deno:cli/rt/10_dispatch_minimal.js:98:12)
-        // at async read (deno:cli/rt/12_io.js:99:19)
-        // at async Object.iter (deno:cli/rt/12_io.js:53:22)
-        // at async writeChunkedBody (_io.ts:178:20)
-        // at async writeResponse (_io.ts:282:5)
-        // at async ServerRequest.respond (server.ts:84:7)
-        // [1]    Exit 1                        deno run --allow-net --allow-read=static --allow-run Main.ts
-        // request.respond() returns a Promise<void> so maybe we need to add a .catch() there.
+        return false;
       },
     );
   }

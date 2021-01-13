@@ -10,7 +10,7 @@ Edit client, server, and shared library files all in a single IDE, all in TypeSc
  - Use a single IDE to edit all three types of modules.
  - Intellisense in the editor should use the correct tsconfig file for each directory.
 ## `.js` is the new `.ts`
-I found a solution to the file extension problem.
+A surprisingly tricky issue is what file extension to use when importing from a TypeScript file.
 ### New Rules
  - All Deno TypeScript files always use the `.ts` file extension in their import statements.
  - All web facing or shared TypeScript files always use the `.js` file extension in their import statements.
@@ -51,7 +51,7 @@ I tried to mark the derived objects as read-only, but that didn't work.
 I've marked the top of these with comments, but you could miss that.
 ### Editors
 It all falls to pieces if I try to load the workspace.
-Intellisense is flakey at best 😢
+Intellisense is flakey at best. 😢
 Sometimes VS code tells me that the TypeScript service has died 5 times in a row.
 Sometimes VS code does no syntax highlighting or suggesting at all.
 Usually it makes some attempts, many of which fail, details vary from one run to the next.
@@ -68,20 +68,25 @@ You can debug the server code right in VS Code.
 You can debug the client code in Chrome.
 Source maps work in Chrome.
 😁
-### Build Process
-This works but it needs more automation.
-Currently you need to use shift-control-B in one VS Code window to build the client files.
-And you need to run a Deno script from the terminal tab of the other VS Code window to copy some files.
+### Client Build Process
+Client side files are built automatically.
+When you try to access a `.js` or `.js.map` file our web server will check the dates of the files.
+If the `.ts` file is newer, the web server will automatically call tsc.
+
+`.ts` files now work like normal `.js`, `.html`, and `.php` files.
+You just save your change in your editor then hit refresh in your browser.
+### Server Build Process
+The server side works but it needs more automation.
+Currently you need to run a Deno script from the terminal tab of the other VS Code window to copy some files.
 Finally you hit the run button in the second VS Code window.
 
 It should be easy to add all of this to the run button.
 https://stackoverflow.com/questions/35327016/using-prelaunchtasks-and-naming-a-task-in-visual-studio-code
 I stopped here because I made a lot of progress on the proof of concept and I wanted to commit before I broke something else.
 
-Ideally both of these pre-tasks should be running constantly.
-We should watch for file changes.
-If any web facing or shared `.ts` files change, run the tsc build.
-If any shared `.ts` files change, run `CopyLibraries.ts`.
+Ideally the server part should be running constantly.
+It should watch for file changes.
+If any shared `.ts` files change, `CopyLibraries.ts` should automatically notice and do another copy.
 ## Bonus Points
  - Make 2 spaces the default for new files.
  - Add a sample ts file that uses tsx.
