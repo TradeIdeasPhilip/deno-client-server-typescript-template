@@ -9,8 +9,10 @@ Edit client, server, and shared library files all in a single IDE, all in TypeSc
  - Create TypeScript modules shared between the client and the server.
  - Use a single IDE to edit all three types of modules.
  - Intellisense in the editor should use the correct tsconfig file for each directory.
+
+The tools to do this are all readily available, but it can be challenging to make them all work together.
 ## `.js` is the new `.ts`
-A surprisingly tricky issue is what file extension to use when importing from a TypeScript file.
+A surprisingly tricky issue is what file extension to use when a TypeScript module needs to import from another TypeScript module.
 
 `import { MyClass } from "./my-library.❔❔❔";`
 ### New Rules
@@ -77,6 +79,7 @@ If the corresponding `.ts` file is newer, the web server will automatically call
 
 `.ts` files now work like normal `.js`, `.html`, and `.php` files.
 You just save your change in your editor then hit refresh in your browser.
+😎
 ### Server Build Process
 The server side works but it needs more automation.
 Currently you need to run a Deno script from the terminal tab of the other VS Code window to copy some files.
