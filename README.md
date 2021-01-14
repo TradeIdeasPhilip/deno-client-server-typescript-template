@@ -91,7 +91,8 @@ It should watch for file changes.
 If any shared `.ts` files change, `CopyLibraries.ts` should automatically notice and do another copy.
 ## Prerequisites
 To make this project work you need to install:
- - [VS Code](https://code.visualstudio.com/download)
+ - [Deno](https://deno.land/manual/getting_started/installation)
+ - [VS Code](https://code.visualstudio.com/download) including [JavaScript and TypeScript](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-next) and [Deno](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno) extensions.
  - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (including git-bash) and
  - [tsc](https://www.typescriptlang.org/download) (I used the npm install.)
 ## Bonus Points
