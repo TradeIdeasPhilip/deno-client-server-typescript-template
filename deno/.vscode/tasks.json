@@ -1,0 +1,19 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Copy Libraries",
+            "type": "shell",
+            "command": "deno run --allow-read --allow-write CopyLibraries.ts",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            // runOptions/runOn will be useful when we make this task smart enough to keep following the file changes.
+            // Change this value from "default" (run only when requested) to "folderOpen" (run when we open this project/folder).
+            "runOptions": {"runOn": "default"}
+        }
+    ]
+}

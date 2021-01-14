@@ -82,16 +82,14 @@ You just save your change in your editor then hit refresh in your browser.
 😎
 ### Server Build Process
 The server side works but it needs more automation.
-Currently you need to run a Deno script from the terminal tab of the other VS Code window to copy some files.
-Finally you hit the run button in the second VS Code window.
 
-It should be easy to add all of this to the run button.
-https://stackoverflow.com/questions/35327016/using-prelaunchtasks-and-naming-a-task-in-visual-studio-code
-I stopped here because I made a lot of progress on the proof of concept and I wanted to commit before I broke something else.
+A build task called "Copy Libraries" copies and fixes the shared `.ts` files.
+Any time you hit the green arrow to start the server, this automatically runs first.
 
-Ideally the server part should be running constantly.
-It should watch for file changes.
-If any shared `.ts` files change, `CopyLibraries.ts` should automatically notice and do another copy.
+Hit control-shift-B to run this any time you like.
+You want to do this periodically to make sure Intellisense is up to date.
+Ideally the copy script should be running constantly.
+It should watch for file changes so you don't miss any.
 ## Prerequisites
 To make this project work you need to install:
  - [Deno](https://deno.land/manual/getting_started/installation)
