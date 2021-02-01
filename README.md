@@ -1,5 +1,6 @@
-# Deno Client Server Template
+# Deno Client/Server TypeScript Template
 This is a template for a standard Deno client/server project.
+Watch [overview](https://youtu.be/ifFaOuZ1aiE) on YouTube.
 ## Main Idea
 Edit client, server, and shared library files all in a single IDE, all in TypeScript. 
 ## Requirements
