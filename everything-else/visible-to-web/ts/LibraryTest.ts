@@ -5,3 +5,5 @@ const b = document.createElement("a");  // This should work for Dom projects onl
 
 // Ideally this should work in both places, but it's not a huge priority.
 const c = alert;  // This should work both places.
+
+const d = new WebSocket("");  // This should work both places.

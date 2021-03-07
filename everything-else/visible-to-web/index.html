@@ -11,6 +11,18 @@
     </p>
     <p id="answer"></p>
     <p id="copyright"></p>
+    <h2>WebSocket</h2>
+    <div>
+      Message: <input id="ws_message" placeholder="This will be coped in the response." size="40">
+    </div>
+    <div>
+      Repeat Count: <input id="ws_repeat_count" value="3">
+    </div>
+    <div>
+      Delay in ms: <input id="ws_delay" value="1500">
+    </div>
+    <div><button id="ws_send_button">Send</button></div>
+    <p>Watch the console window for this web page and for the server to see results.</p>
   </body>
 </html>
 <script type="module" src="ts/index.js"></script>
