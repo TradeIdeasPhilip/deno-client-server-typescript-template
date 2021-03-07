@@ -3,6 +3,7 @@ import { AugmentedRequest, WebServer } from "./Dispatcher.ts";
 import { tripleRot13 } from "./shared/high-security.ts";
 import { copyrightString, sleep } from "./shared/useful-stuff.ts";
 import { EchoRequest } from "./shared/web-socket-protocol.ts";
+import { StreamingReader } from "./shared/streaming-reader.ts";
 import {
   acceptWebSocket,
   isWebSocketCloseEvent,
@@ -39,7 +40,7 @@ webServer.addPrefixAction("/streaming", async (request, remainder) => {
           (async () => {
             for (let i = 0; i < echoRequest.repeatCount; i++) {
               await sleep(echoRequest.delay);
-              console.log({ i, echoRequest });
+              //console.log({ i, echoRequest });
               webSocket.send(echoRequest.message);
             }
           })();
@@ -58,3 +59,19 @@ webServer.start();
 console.log("running out of", Deno.cwd());
 console.log("Listening.", "http://127.0.0.1:9000/static/", copyrightString);
 
+// Prove that we can connect to a WebSocket server using the same exact software
+// as a web page would use.  In this case we are connecting to ourself.  That makes
+// the test much simpler.
+(async () => {
+  await sleep(10000);
+  console.log("Starting web socket client test.");
+  const streamingReader = new StreamingReader();
+  await sleep(500);
+  console.log("Sending first request.");
+  const r1 = new EchoRequest("once / second", 3, 1000);
+  streamingReader.send(r1.encode());
+  await sleep(250);
+  console.log("Sending second request.");
+  const r2 = new EchoRequest("twice / second", 6, 500);
+  streamingReader.send(r2.encode());
+})();
