@@ -82,8 +82,10 @@ If the corresponding `.ts` file is newer, the web server will automatically call
 You just save your change in your editor then hit refresh in your browser.
 😎
 
-Make sure that automatic tasks are enabled!
-https://stackoverflow.com/a/53755091/971955
+I'm not sure why I had to do the build in the web server.
+In [other projects](https://github.com/TradeIdeasPhilip/penrose-tiling/blob/master/.vscode/tasks.json) I use tsc in watch mode.
+As soon as I save a `.ts` file in the editor, typescript rebuilds the corresponding `.js` and `.js.map` files.
+It would be nice to remove AutoCompile.ts in favor of `tsc --watch`, but tsc wasn't working well in this project for some reason.
 
 ### Server Build Process
 The server side works but it needs more automation.
