@@ -81,6 +81,10 @@ If the corresponding `.ts` file is newer, the web server will automatically call
 `.ts` files now work like normal `.js`, `.html`, and `.php` files.
 You just save your change in your editor then hit refresh in your browser.
 😎
+
+Make sure that automatic tasks are enabled!
+https://stackoverflow.com/a/53755091/971955
+
 ### Server Build Process
 The server side works but it needs more automation.
 
