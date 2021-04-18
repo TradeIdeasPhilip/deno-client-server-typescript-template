@@ -11,3 +11,8 @@ export function rot13(str : string){
 export function sleep(ms : number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+let libraryContext = "Deno server 🦕";
+// The following line will be commented out when we copy to the Deno server.
+libraryContext = "Web client 🕸";  // 𝒩ℴ𝓉 𝒻ℴ𝓇 𝒟ℯ𝓃ℴ
+console.log("LIBRARY CONTEXT:", libraryContext);
