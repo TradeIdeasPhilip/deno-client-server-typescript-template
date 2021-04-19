@@ -2,7 +2,6 @@ import { rot13 } from "./useful-stuff.js";
 
 // This is ugly but it works.
 // This should be in a lib.*.d.ts file.  TODO
-declare function alert(message?:string) :void;
 
 /**
  * 100% kid-sister-proof
