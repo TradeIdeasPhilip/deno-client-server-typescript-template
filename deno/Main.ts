@@ -14,6 +14,8 @@ WebSocketEvent,
 
 const webServer: WebServer = new WebServer();
 
+const textEncoder = new TextEncoder();
+
 webServer.addFileHandler("/static", "../everything-else/visible-to-web/", addTsCompiler);
 webServer.addPrefixAction("/js-bin/greet", (request: AugmentedRequest, remainder: string) => {
   const encryptedName = request.searchParams.get("encrypted_name");
@@ -41,7 +43,13 @@ webServer.addPrefixAction("/streaming", async (request, remainder) => {
             for (let i = 0; i < echoRequest.repeatCount; i++) {
               await sleep(echoRequest.delay);
               //console.log({ i, echoRequest });
-              webSocket.send(echoRequest.message);
+              if (i % 2) {
+                // Odd Numbers
+                webSocket.send(textEncoder.encode(echoRequest.message));
+              } else {
+                // Even Numbers
+                webSocket.send(echoRequest.message);
+              }
             }
           })();
           console.log("TODO handle echo request", echoRequest);
