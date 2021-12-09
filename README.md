@@ -46,6 +46,9 @@ In the process it modifies the imports.
 If you were importing from a `.js` file, the copy will import from the corresponding `.ts` file.
 Deno doesn't know or care that we compiled some of these to JavaScript in a different directory.
 ## Current Status
+### 12/9/2021
+Last time I checked, some of this code broke over time.
+I stand by the requirements.
 ### Modules
 I **can** share modules between client and server.
 And those modules **can** import other modules.
@@ -101,7 +104,7 @@ It should watch for file changes so you don't miss any.
 To make this project work you need to install:
  - [Deno](https://deno.land/manual/getting_started/installation)
  - [VS Code](https://code.visualstudio.com/download) including [JavaScript and TypeScript](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-next) and [Deno](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno) extensions.
- - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (including git-bash) and
+ - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (more precisely, git-bash, which is included with git) and
  - [tsc](https://www.typescriptlang.org/download) (I used the npm install.)
 ## Bonus Points
  - Make 2 spaces the default for new files.
