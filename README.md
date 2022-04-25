@@ -46,6 +46,62 @@ In the process it modifies the imports.
 If you were importing from a `.js` file, the copy will import from the corresponding `.ts` file.
 Deno doesn't know or care that we compiled some of these to JavaScript in a different directory.
 ## Current Status
+### 4/25/2022
+I've been doing a lot of front end work in TypeScript recently.
+I have not touched Deno or any serious server stuff in a while.
+
+#### Vite
+I've had good luck using [Vite](https://vitejs.dev/) as my build tool handle npm, bundling, etc.
+Vite has some nice features that can help in a hybrid Deno / client project.
+
+For one thing, if you want to import a TypeScript file, you use the `*.ts` file extension.
+This is the same for the client and the server.
+So you can share the source files directly!
+
+Vite is also good about reading files from `../` and similar places.  
+So you can set up a directory structure like:
+```
+my-project/
+my-project/shared-libraries
+my-project/deno-stuff
+my-project/client-stuff
+my-project/interfaces
+```
+You can edit and build `client-stuff` like a normal Vite project.
+You can edit and run `deno-stuff` like a normal Deno project.  
+You would store all of `my-project` in one git repository.
+
+If a file is shared by multiple projects, you can use a git submodule to take care of it.
+For an example, that's how I do libraries between https://github.com/TradeIdeasPhilip/bounce-3d and https://github.com/TradeIdeasPhilip/roughjs-with-vite.
+I tried that trick before I used Vite, but I ran into problems back then.
+For one thing, when Vite creates a JavaScript file, it goes directly into the release directory, not the source directory.
+That becomes important if your projects don't all have _identical_ `tsconfig.json` files.
+
+In practice I found that I had some shared libraries that I want to use in every JavaScript project.
+A git submodule is perfect for those files.
+And I have interfaces describing the data that goes between the client and the server.
+Those files would be stored in the same git repository as the deno and client source code.
+
+Vite includes its own development webserver that translates the source files on the fly.
+I was doing that with my own Deno web server.
+I liked the idea of using my own server to deliver the HTML and JavaScript files so I could mix live data into those files.
+I wanted to store PHP style templates.
+Let my server add the live data at the same time as it does the compiling.
+I've lost that ability, but it doesn't seem huge.
+
+There are many alternatives and competitors.
+I picked Vite because it is small and simple and it does what I need.
+It seems helpful in lots of places, including a mixed Deno & client project.
+
+#### Still needs work
+
+* One editor for both projects — I haven't tried lately.  As far a I know, things still crash if you try to put Deno and a client project into the same VS Code workspace.
+* Different tsconfig's for different files or directories. — I haven't seen any version of this anywhere!  I want Intellisense to know that `console` is available in all files but `Deno` and `document.createElement()` only work in specific files.  You can do that on a project by project basis, but I want the shared files to be smarter. 
+* Make 2 spaces the default for new files. — This seemed so simple when I first listed it.  I suspect there are multiple formatters all competing in my VS Code.
+* Add a sample ts file that uses tsx. — jsx/tsx is very powerful.  It's built into some tools.  I'd like to do more with it.
+
+If you've gotten any of this to work, please let me know.
+
 ### 12/9/2021
 Last time I checked, some of this code broke over time.
 I stand by the requirements.
