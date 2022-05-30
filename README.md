@@ -15,7 +15,7 @@ The tools to do this are all readily available, but it can be challenging to mak
 ## `.js` is the new `.ts`
 A surprisingly tricky issue is what file extension to use when a TypeScript module needs to import from another TypeScript module.
 
-`import { MyClass } from "./my-library.❔❔❔";`
+`import { MyClass } from "./my-library.❓❓❓";`
 ### New Rules
  - All Deno TypeScript files always use the `.ts` file extension in their import statements.
  - All web facing or shared TypeScript files always use the `.js` file extension in their import statements.
@@ -51,6 +51,11 @@ I've been doing a lot of front end work in TypeScript recently.
 I have not touched Deno or any serious server stuff in a while.
 
 #### Vite
+
+__CORRECTION__ Vite _does_ allow you to use the `*.ts` file extension in a <script> tag in your `*.html` files.
+_However_, if you add the `*.ts` file extension file extension to your TypeScript `import` statements, VS Code will complain, and the build will fail.
+🙁
+
 I've had good luck using [Vite](https://vitejs.dev/) as my build tool handle npm, bundling, etc.
 Vite has some nice features that can help in a hybrid Deno / client project.
 
